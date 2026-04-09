@@ -949,6 +949,15 @@ struct ptp_session_config
 }
 
 // ==========================================
+// WARMUP STATS RESET
+// ==========================================
+// 1 = Reset all stats after warmup period (default)
+// 0 = Keep stats accumulated during warmup
+#ifndef WARMUP_STATS_RESET
+#define WARMUP_STATS_RESET 1
+#endif
+
+// ==========================================
 // HEALTH MONITOR CONFIGURATION
 // ==========================================
 // Health Monitor sends periodic queries to DTN and receives status responses.

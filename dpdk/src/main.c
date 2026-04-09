@@ -112,7 +112,11 @@ int main(int argc, char const *argv[])
     );
     printf("PRBS Method: Sequence-based with ~268MB cache per port\n");
     printf("Payload format: [8-byte sequence][PRBS-31 data]\n");
-    printf("WARM-UP: First 60 seconds (stats will reset at 60s)\n");
+#if WARMUP_STATS_RESET
+    printf("WARM-UP: First 120 seconds (stats will reset after warmup)\n");
+#else
+    printf("WARM-UP: First 120 seconds (stats will NOT reset after warmup)\n");
+#endif
     printf("Sequence Validation: Enabled (Lost/Out-of-Order/Duplicate detection)\n");
 #if ENABLE_RAW_SOCKET_PORTS
     printf("Raw Socket Ports: Enabled (%d ports, multi-target)\n", MAX_RAW_SOCKET_PORTS);
@@ -616,7 +620,11 @@ int main(int argc, char const *argv[])
         {
             printf("\n");
             printf("═══════════════════════════════════════════════════════════════\n");
+#if WARMUP_STATS_RESET
             printf("   WARM-UP COMPLETE - RESETTING STATS - TEST STARTING NOW\n");
+#else
+            printf("   WARM-UP COMPLETE - STATS KEPT - TEST STARTING NOW\n");
+#endif
             printf("═══════════════════════════════════════════════════════════════\n");
             printf("\n");
 
@@ -629,11 +637,13 @@ int main(int argc, char const *argv[])
                 printf("Test Start Time : %s\n", time_buf);
             }
 
+#if WARMUP_STATS_RESET
             helper_reset_stats(&ports_config, prev_tx_bytes, prev_rx_bytes);
 
 #if PTP_ENABLED
             ptp_reset_stats();
 #endif
+#endif /* WARMUP_STATS_RESET */
 
             warmup_complete = true;
             test_time = 0;
