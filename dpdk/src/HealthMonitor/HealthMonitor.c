@@ -386,24 +386,65 @@ static void health_print_fpga_table(const char *fpga_name, const struct health_f
         printf("[HEALTH] Device info: NOT RECEIVED\n");
     }
 
-    // Port Status Table
+    // Port Status Table - Traffic Counters
     printf("[HEALTH] ---- %s FPGA Port Status (pkts=%d, ports=%d) ----\n",
            fpga_name, fpga->packets_received, fpga->port_count_received);
-    printf("[HEALTH] Port |    TxCnt |    RxCnt | PolDrop | VLDrop | HP_Ovf | LP_Ovf | BE_Ovf |\n");
-    printf("[HEALTH] -----|----------|----------|---------|--------|--------|--------|--------|\n");
+    printf("[HEALTH] [Traffic Counters]\n");
+    printf("[HEALTH] Port |    TxCnt |    RxCnt |   BECnt | PolDrop | VLDrop | BitSt |\n");
+    printf("[HEALTH] -----|----------|----------|---------|---------|--------|-------|\n");
 
     for (int i = 0; i < HEALTH_MAX_PORTS; i++) {
         const struct health_port_info *p = &fpga->ports[i];
         if (p->valid) {
-            printf("[HEALTH] %4d | %8lu | %8lu | %7lu | %6lu | %6lu | %6lu | %6lu |\n",
+            printf("[HEALTH] %4d | %8lu | %8lu | %7lu | %7lu | %6lu |  0x%02X |\n",
                    p->port_number,
                    (unsigned long)p->tx_count,
                    (unsigned long)p->rx_count,
+                   (unsigned long)p->be_count,
                    (unsigned long)p->traffic_policy_drop,
                    (unsigned long)p->vlid_drop_count,
+                   p->bit_status);
+        }
+    }
+
+    // Port Status Table - Error Counters
+    printf("[HEALTH] [Error Counters]\n");
+    printf("[HEALTH] Port |    CRC |  Align |  Len64 | Len1518 |  MinVL |  MaxVL | InpTerr | VLSrcErr | MaxDlyErr |\n");
+    printf("[HEALTH] -----|--------|--------|--------|---------|--------|--------|---------|----------|-----------|\n");
+
+    for (int i = 0; i < HEALTH_MAX_PORTS; i++) {
+        const struct health_port_info *p = &fpga->ports[i];
+        if (p->valid) {
+            printf("[HEALTH] %4d | %6lu | %6lu | %6lu | %7lu | %6lu | %6lu | %7lu | %8lu | %9lu |\n",
+                   p->port_number,
+                   (unsigned long)p->crc_err_count,
+                   (unsigned long)p->ali_err_count,
+                   (unsigned long)p->len_exc_64,
+                   (unsigned long)p->len_exc_1518,
+                   (unsigned long)p->min_vl_frame_err,
+                   (unsigned long)p->max_vl_frame_err,
+                   (unsigned long)p->inp_port_terr_cnt,
+                   (unsigned long)p->vl_source_err,
+                   (unsigned long)p->max_delay_err);
+        }
+    }
+
+    // Port Status Table - Queue Overflow Counters
+    printf("[HEALTH] [Queue Overflow Counters]\n");
+    printf("[HEALTH] Port |  QOvf | HP_Ovf | LP_Ovf | BE_Ovf | UndefMAC | MaxDlyParam |\n");
+    printf("[HEALTH] -----|-------|--------|--------|--------|----------|-------------|\n");
+
+    for (int i = 0; i < HEALTH_MAX_PORTS; i++) {
+        const struct health_port_info *p = &fpga->ports[i];
+        if (p->valid) {
+            printf("[HEALTH] %4d | %5lu | %6lu | %6lu | %6lu | %8lu | %11lu |\n",
+                   p->port_number,
+                   (unsigned long)p->queue_overflow,
                    (unsigned long)p->hp_queue_overflow,
                    (unsigned long)p->lp_queue_overflow,
-                   (unsigned long)p->be_queue_overflow);
+                   (unsigned long)p->be_queue_overflow,
+                   (unsigned long)p->undef_mac_count,
+                   (unsigned long)p->max_delay_param);
         }
     }
 }
