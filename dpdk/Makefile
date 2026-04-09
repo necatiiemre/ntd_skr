@@ -22,15 +22,12 @@ ENABLE_RAW_SOCKET_PORTS ?= 1
 # DTN port-based statistics mode (1=DTN 34-port table, 0=Server 8-port table)
 STATS_MODE_DTN ?= 1
 
-# Warmup stats reset (1=reset stats after warmup, 0=keep stats)
-WARMUP_STATS_RESET ?= 1
-
 # ATE root directory (auto-detected at build time)
 ATE_ROOT := $(shell pwd)/AteCumulus/AteTestMode
 
 # Compiler flags
-CFLAGS = -O3 -march=native -flto -ffast-math -funroll-loops -Wextra -I$(INCDIR) -I$(SRCDIR) -DNUM_TX_CORES=$(NUM_TX_CORES) -DNUM_RX_CORES=$(NUM_RX_CORES) -DUSE_VLAN=$(USE_VLAN) -DTARGET_GBPS_FAST=$(TARGET_GBPS_FAST) -DTARGET_GBPS_MID=$(TARGET_GBPS_MID) -DTARGET_GBPS_SLOW=$(TARGET_GBPS_SLOW) -DENABLE_RAW_SOCKET_PORTS=$(ENABLE_RAW_SOCKET_PORTS) -DSTATS_MODE_DTN=$(STATS_MODE_DTN) -DWARMUP_STATS_RESET=$(WARMUP_STATS_RESET) -DATE_ROOT=\"$(ATE_ROOT)\"
-DEBUG_CFLAGS = -g -O3 -DDEBUG -march=native -Wall -Wextra -I$(INCDIR) -I$(SRCDIR) -DENABLE_RAW_SOCKET_PORTS=$(ENABLE_RAW_SOCKET_PORTS) -DWARMUP_STATS_RESET=$(WARMUP_STATS_RESET) -DATE_ROOT=\"$(ATE_ROOT)\"
+CFLAGS = -O3 -march=native -flto -ffast-math -funroll-loops -Wextra -I$(INCDIR) -I$(SRCDIR) -DNUM_TX_CORES=$(NUM_TX_CORES) -DNUM_RX_CORES=$(NUM_RX_CORES) -DUSE_VLAN=$(USE_VLAN) -DTARGET_GBPS_FAST=$(TARGET_GBPS_FAST) -DTARGET_GBPS_MID=$(TARGET_GBPS_MID) -DTARGET_GBPS_SLOW=$(TARGET_GBPS_SLOW) -DENABLE_RAW_SOCKET_PORTS=$(ENABLE_RAW_SOCKET_PORTS) -DSTATS_MODE_DTN=$(STATS_MODE_DTN) -DATE_ROOT=\"$(ATE_ROOT)\"
+DEBUG_CFLAGS = -g -O3 -DDEBUG -march=native -Wall -Wextra -I$(INCDIR) -I$(SRCDIR) -DENABLE_RAW_SOCKET_PORTS=$(ENABLE_RAW_SOCKET_PORTS) -DATE_ROOT=\"$(ATE_ROOT)\"
 
 # Additional libraries for raw socket ports (pthread for threading)
 EXTRA_LIBS = -lpthread
